@@ -1,9 +1,26 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import App from './App';
+import { render, screen } from "@testing-library/react";
+import fetchMock from "jest-fetch-mock";
+import App from "./App";
+import { fakeUsers } from "./utils/mockData";
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe("testa a página principal", () => {
+  beforeEach(() => {
+    fetchMock.resetMocks();
+  });
+
+  test("renderiza usuários", async () => {
+    fetchMock.mockResponse(JSON.stringify(fakeUsers));
+
+    render(<App />);
+
+    //const mockedUser = await screen.findAllByText(/mayra/i);
+    //expect(mockedUser).toBeInTheDocument();
+
+    for (let i = 0; i < fakeUsers.length; i++) {
+      const mockedUser = await screen.findByText(fakeUsers[i].name);
+      expect(mockedUser).toBeInTheDocument();
+    }
+
+    screen.logTestingPlaygroundURL();
+  });
 });
